@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"strings"
-)
+) 
 
 var lista_slow_dla_dnia_urodzin = map[int]string{1: "wspaniałomyślny", 2: "kreatywny", 3: "przepiękny",
 	4: "interesowny", 5: "bezinteresowny", 6: "wielki", 7: "katastroficzny", 8: "malutki",
