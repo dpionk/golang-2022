@@ -96,7 +96,6 @@ func sprawdz_rekord(imie string, wynik int64, poprzednie_wyniki map[string]int64
 
 func game(wylosowana_liczba int, proby int, wyniki []wynik, gry int, wyniki_z_pliku map[string]int64) {
 	fmt.Println("Podaj liczbę:")
-	fmt.Println(wylosowana_liczba)
 	var odpowiedz string
 	proby++
 	fmt.Scan(&odpowiedz)
