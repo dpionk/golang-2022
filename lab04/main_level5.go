@@ -1,11 +1,13 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"math/rand"
 	"os"
 	"sort"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -39,8 +41,32 @@ func print_wyniki(wyniki []wynik) {
 
 }
 
-func wczytaj_wyniki() {
+func wczytaj_wyniki() map[string]int64 {
+	file, err := os.Open("results.txt")
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
 
+	scanner := bufio.NewScanner(file)
+	wyniki := make(map[string]int64)
+	for scanner.Scan() {
+		v := strings.Split(scanner.Text(), " ")
+		intVar, _ := strconv.ParseInt(v[1], 0, 16)
+		if _, found := wyniki[v[0]]; found {
+			if wyniki[v[0]] > intVar {
+				wyniki[v[0]] = intVar
+			}
+		} else {
+			wyniki[v[0]] = intVar
+		}
+	}
+
+	if err := scanner.Err(); err != nil {
+		panic(err)
+	}
+
+	return wyniki
 }
 
 func zapisz_do_pliku(wyniki []wynik) {
@@ -60,7 +86,15 @@ func zapisz_do_pliku(wyniki []wynik) {
 	fmt.Println("Zapisano wyniki w pliku")
 }
 
-func game(wylosowana_liczba int, proby int, wyniki []wynik, gry int) {
+func sprawdz_rekord(imie string, wynik int64, poprzednie_wyniki map[string]int64) {
+	if _, found := poprzednie_wyniki[imie]; found {
+		if poprzednie_wyniki[imie] > wynik {
+			fmt.Println("Brawo! Pobito własny rekord! Wcześniejszy: " + strconv.FormatInt(poprzednie_wyniki[imie], 10) + " Aktualny: " + strconv.FormatInt(wynik, 10))
+		}
+	}
+}
+
+func game(wylosowana_liczba int, proby int, wyniki []wynik, gry int, wyniki_z_pliku map[string]int64) {
 	fmt.Println("Podaj liczbę:")
 	fmt.Println(wylosowana_liczba)
 	var odpowiedz string
@@ -77,13 +111,14 @@ func game(wylosowana_liczba int, proby int, wyniki []wynik, gry int) {
 		fmt.Println("Podaj swoje imię")
 		var imie string
 		fmt.Scan(&imie)
+		sprawdz_rekord(imie, int64(proby), wyniki_z_pliku)
 		nowe_wyniki := dodaj_wynik(imie, proby, wyniki, gry)
 		fmt.Println("Czy chcesz grać dalej? T/N")
 		var kontynuuj string
 		fmt.Scan(&kontynuuj)
 		switch kontynuuj {
 		case "T", "t":
-			game(wylosuj(), 0, nowe_wyniki, gry+1)
+			game(wylosuj(), 0, nowe_wyniki, gry+1, wyniki_z_pliku)
 		case "N", "n":
 			fmt.Println("Żegnaj...")
 			print_wyniki(nowe_wyniki)
@@ -93,17 +128,18 @@ func game(wylosowana_liczba int, proby int, wyniki []wynik, gry int) {
 		}
 	case intVar < wylosowana_liczba:
 		fmt.Println("Więcej...")
-		game(wylosowana_liczba, proby, wyniki, gry)
+		game(wylosowana_liczba, proby, wyniki, gry, wyniki_z_pliku)
 	case intVar > wylosowana_liczba:
 		fmt.Println("Mniej...")
-		game(wylosowana_liczba, proby, wyniki, gry)
+		game(wylosowana_liczba, proby, wyniki, gry, wyniki_z_pliku)
 	}
 }
 
 func main() {
 	var wyniki []wynik
 	wylosowana_liczba := wylosuj()
+	wyniki_z_pliku := wczytaj_wyniki()
 	fmt.Println("Witaj! Teraz będziesz zgadywać liczbę, którą wylosowałxm")
 	fmt.Println("Aby wyjść z programu, wpisz 'koniec' ")
-	game(wylosowana_liczba, 0, wyniki, 0)
+	game(wylosowana_liczba, 0, wyniki, 0, wyniki_z_pliku)
 }
