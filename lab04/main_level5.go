@@ -89,13 +89,12 @@ func zapisz_do_pliku(wyniki []wynik) {
 func sprawdz_rekord(imie string, wynik int64, poprzednie_wyniki map[string]int64) {
 	if _, found := poprzednie_wyniki[imie]; found {
 		if poprzednie_wyniki[imie] > wynik {
-			fmt.Println("Brawo! Pobito własny rekord! Wcześniejszy: " + strconv.FormatInt(poprzednie_wyniki[imie], 10) + " Aktualny: " + strconv.FormatInt(wynik, 10))
+			fmt.Println("Brawo!\n Pobito własny rekord! Wcześniejszy: " + strconv.FormatInt(poprzednie_wyniki[imie], 10) + " Aktualny: " + strconv.FormatInt(wynik, 10))
 		}
 	}
 }
 
 func game(wylosowana_liczba int, proby int, wyniki []wynik, gry int, wyniki_z_pliku map[string]int64) {
-	fmt.Println("Podaj liczbę:")
 	var odpowiedz string
 	proby++
 	fmt.Scan(&odpowiedz)
@@ -106,7 +105,7 @@ func game(wylosowana_liczba int, proby int, wyniki []wynik, gry int, wyniki_z_pl
 		print_wyniki(wyniki)
 		zapisz_do_pliku(wyniki)
 	case intVar == wylosowana_liczba:
-		fmt.Println("Brawo! Odgadłeś liczbę! Ilość prób: ", proby)
+		fmt.Println("Brawo!\n Odgadłeś liczbę! Ilość prób: ", proby)
 		fmt.Println("Podaj swoje imię")
 		var imie string
 		fmt.Scan(&imie)
