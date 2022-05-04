@@ -14,7 +14,7 @@ var leaf = "🍃"
 var empty_space = "🟫"
 
 var ant_count = 4
-var leaf_count = 5
+var leaf_count = 10
 
 var moves = [4]string{"l", "r", "u", "d"}
 
@@ -34,12 +34,13 @@ var ant_positions = [][]int{}
 
 var leaf_positions = [][]int{}
 
+// 2nd index- information if ant has leaf - 1 if does, 0 if not
 func spawn_ants(ant_count int) {
 	for i := 0; i < ant_count; i++ {
 		var x = r1.Intn(9)
 		var y = r1.Intn(9)
 		mapa[x][y] = ant
-		var position = []int{x, y}
+		var position = []int{x, y, 0}
 		ant_positions = append(ant_positions, position)
 	}
 }
@@ -85,12 +86,15 @@ func change_ant_position(positions [][]int) {
 	}
 	for i := 0; i < len(positions); i++ {
 		if mapa[positions[i][0]][positions[i][1]] == leaf {
-			if positions[i][0] < 9 && positions[i][1] < 9 {
+			if positions[i][0] < 9 && positions[i][1] < 9 && positions[i][2] == 1 {
 				mapa[positions[i][0]+1][positions[i][1]+1] = leaf
 			}
-			if positions[i][0] > 0 && positions[i][1] > 0 {
+			if positions[i][0] > 0 && positions[i][1] > 0 && positions[i][2] == 1 {
 				mapa[positions[i][0]-1][positions[i][1]-1] = leaf
+			} else if positions[i][2] == 0 {
+				positions[i][2] = 1
 			}
+
 		}
 		mapa[positions[i][0]][positions[i][1]] = ant
 	}
