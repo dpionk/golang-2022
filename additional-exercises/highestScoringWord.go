@@ -32,7 +32,7 @@ func highestScoringWord(s string) string {
 	for i := 0; i < len(splitedString); i++ {
 		score := 0
 		for j := 0; j < len(splitedString[i]); j++ {
-			score += findLetterScore(string(splitedString[i][j]))
+			score += findLetterScore(strings.ToLower(string(splitedString[i][j])))
 		}
 		if score > highestScoringWordValue.score {
 			highestScoringWordValue.score = score
